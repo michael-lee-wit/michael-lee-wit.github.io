@@ -1,0 +1,717 @@
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="description" content="Captive Portal"/>
+	<title>Captive Portal</title>
+	<style>
+		body {
+			background: #555;
+			font-family: Flama,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
+			font-size: 12px;
+			color: #666;
+			background: white;
+			-webkit-font-smoothing: antialiased;
+			-webkit-text-size-adjust: 100%;
+		}
+		
+		a:link {
+			color: #000;
+		}
+		
+		a:visited {
+			color: #000;
+		}
+
+		.contentContainer {
+			margin: auto;
+			height: calc(100% - 80px);
+			width: calc(100% - 80px);
+			max-width: 600;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		
+		.contentBlockLogin {
+			margin: auto;
+			width: 350px;
+			background: white;
+			border: 1px solid #e3e3e3;
+			padding: 20px;
+			margin: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align:centre;
+		}
+		
+		@media screen and (max-width: 500px) {
+			.contentBlockLogin {
+				border: none;
+			}
+		}
+		
+		.contentBlockText {
+			width: 100%;
+			max-width: 600;
+			height: 100%;
+			background: white;
+			border: 1px solid #e3e3e3;
+			padding: 10px 20px 10px 20px;
+			margin: 0;
+			padding: 0;
+			visibility: hidden;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		
+		.contentBlockTextScrollingSection {
+			box-sizing: border-box;
+			height: calc(100% - 80px);
+			padding: 10 20 10 10;
+			color: black;
+			overflow-y: scroll;
+			position: absolute;
+		}
+		
+		.contentText {
+			width: 200px;
+			margin: auto;
+			text-align: left;
+			margin: 20px;
+		}
+		
+		.centredImage {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		}
+		
+		.centredLine {
+			text-align: center;
+			margin: 20px auto;
+			width:280px;
+		}
+		
+		.centredLineFlat {
+			text-align: center;
+			margin: 0px auto;
+			color: black;
+			width:280px;
+		}
+		
+		.locationLine {
+			color: #666;
+			margin: 0px auto;
+			padding: 0px;
+			width: 118px;
+			height: 29px;
+			font-size: 24px;
+			font-weight: 400;
+			font-stretch: condensed;
+			font-style: normal;
+			line-height: normal;
+			letter-spacing: .96px;
+			text-transform: uppercase;
+			text-size-adjust:100%;
+			text-align: center;
+			-webkit-text-size-adjust: 100%;
+		}
+		
+		.titleLine {
+			height: 77px;
+			text-align: center;
+			font-family: Flama;
+			font-size: 64px;
+			font-weight: 470;
+			font-style: normal;
+			line-height: normal;
+			letter-spacing: 2.56px;
+			font-stretch: 150%;
+			color: #666;
+			margin-top: 15px;
+			margin-bottom: 17px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		
+		.leftLine {
+			text-align: left;
+			margin: 20px 5px 20px 5px;
+		}
+		
+		.errorMessage {
+			text-align: center;
+			margin: 20px auto;
+			display:none;
+			color:red;
+		}
+		
+		.acceptButton {
+			width: 300;
+			height: 53;
+			border-radius: 3px;
+			background: #000000;
+			border: 0 solid black;
+			color: white;
+			font-size: 17px;
+			font-weight: 600;
+		}
+		
+		.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+			margin-bottom: .5rem;
+			font-weight: 500;
+			line-height: 1.2;
+		}
+		
+		.h1, h1 {
+			font-size: 2.25rem;
+		}
+		
+		.h2, h2 {
+			font-size: 2.25rem;
+		}
+		
+		hr {
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+			border: 0;
+			border-top: 1px solid rgba(0,0,0,.1);
+		}
+	</style>
+	<script>
+		function submitAction(){
+			var link = document.location.href;
+			var searchString = "redirect=";
+			var equalIndex = link.indexOf(searchString);
+			var redirectUrl = "";
+
+			if (document.forms[0].action == "") {
+			var url = window.location.href;
+			var args = new Object();
+			var query = location.search.substring(1);
+			var pairs = query.split("&");
+				for(var i=0;i<pairs.length;i++){
+					var pos = pairs[i].indexOf('=');
+					if(pos == -1) continue;
+					var argname = pairs[i].substring(0,pos);
+					var value = pairs[i].substring(pos+1);
+					args[argname] = unescape(value);
+				}
+				document.forms[0].action = args.switch_url;       
+			}
+			if(equalIndex >= 0) {
+					equalIndex += searchString.length;
+					redirectUrl = "";
+					redirectUrl += link.substring(equalIndex);
+			}
+			if(redirectUrl.length > 255) {
+					redirectUrl = redirectUrl.substring(0,255);
+			}
+			
+			if(document.forms[0].privacy.checked) {
+				document.forms[0].redirect_url.value = redirectUrl;
+				document.forms[0].buttonClicked.value = 4;
+				document.forms[0].submit();
+			} else {
+				reject();
+			}
+		}
+
+		function reject(){
+			var errorBlock = document.getElementById("errorMessage");
+			var privacyCheckbox = document.getElementById("privacy");
+			errorBlock.style.display = 'block';
+		}
+
+		function showTerms() {
+			var loginWindow = document.getElementById("loginBlock")
+			var termsWindow = document.getElementById("termsBlock")
+			var privacyWindow = document.getElementById("privacyBlock");
+			
+			loginWindow.style.visibility = 'hidden';
+			privacyWindow.style.visibility = 'hidden';
+			termsWindow.style.visibility = 'visible';
+		}
+		
+		function showPrivacy() {
+			var loginWindow = document.getElementById("loginBlock")
+			var termsWindow = document.getElementById("termsBlock")
+			var privacyWindow = document.getElementById("privacyBlock");
+			
+			loginWindow.style.visibility = 'hidden';
+			termsWindow.style.visibility = 'hidden';
+			privacyWindow.style.visibility = 'visible';
+		}
+		
+		function showLogin() {
+			var loginWindow = document.getElementById("loginBlock")
+			var termsWindow = document.getElementById("termsBlock")
+			var privacyWindow = document.getElementById("privacyBlock");
+			
+			privacyWindow.style.visibility = 'hidden';
+			termsWindow.style.visibility = 'hidden';
+			loginWindow.style.visibility = 'visible';
+		}
+		
+		function loadAction(){
+			  var url = window.location.href;
+			  var args = new Object();
+			  var query = location.search.substring(1);
+			  var pairs = query.split("&");
+			  for(var i=0;i<pairs.length;i++){
+				  var pos = pairs[i].indexOf('=');
+				  if(pos == -1) continue;
+				  var argname = pairs[i].substring(0,pos);
+				  var value = pairs[i].substring(pos+1);
+				  args[argname] = unescape(value);
+			  }
+			  document.forms[0].action = args.switch_url;
+		}
+</script>
+</head>
+
+<body onload="loadAction();"> 
+<form method="post" id="interstitial">
+	<input TYPE="hidden" NAME="buttonClicked" SIZE="16" MAXLENGTH="15" value="0">
+	<input TYPE="hidden" NAME="redirect_url" SIZE="255" MAXLENGTH="255" VALUE="">
+	<input TYPE="hidden" NAME="err_flag" SIZE="16" MAXLENGTH="15" value="0">
+	
+	<div class="contentContainer">
+		<div id="loginBlock" class="contentBlockLogin">
+			<img class="centredImage" src="logoLondon.jpg" width="180;" alt="Westfield London">
+			<div class="titleLine">FREE WI-FI</div>
+			<div class="centredLineFlat">Welcome to Westfield</div>
+			<div class="centredLineFlat">Log on to our network once, and this device will automatically connect at participating Westfield centres everywhere you go.</div>	
+			<div class="centredLine" style="width:280; font-size:13px">
+				<span style="display:inline; float:left"><input type="checkbox" id="privacy" name="privacy"></span>
+				<span><label for="privacy" style="display:inline; text-align:left">By clicking CONNECT, you agree that you've read and accepted our <a href="javascript:showTerms()">Terms &amp; Conditions</a> &amp; <a href="javascript:showPrivacy()">Privacy Policy</a></label></span>
+				
+			</div>
+			<div class="errorMessage" id="errorMessage">Please check the box to proceed</div>
+			<div class="centredLine">
+				<div><button class="acceptButton" type="button" name="Submit" value="Accept" class="button" onclick="submitAction();" form="interstitial" id="connect">Accept and Connect</button></div>
+			</div>
+		</div>
+		
+		<div id="termsBlock" class="contentBlockText">
+			<div class="leftLine">
+				<span style="font-size: 18px">Terms and Conditions</span>
+				<a href="javascript:showLogin()"><img src="close.png" style="float: right; width: 15px; height: 15px" alt="Close"></a>
+			</div>
+			<div class="leftLine">
+				<div class="contentBlockTextScrollingSection">
+				   <div>
+					  <section class="     " style="height:auto;">
+						 <div class="">
+							<h2>Westfield Terms and Conditions</h2>
+							<div>
+							   <p>These terms and conditions ("Terms and Conditions") govern your use and purchase of products or services &nbsp;from uk.westfield.com and our mobile app (the "Site") provided by Westfield Corporation, its subsidiaries, affiliates and related entities ("Westfield", "we", "us", and "our") and offered for Users in the United Kingdom. &nbsp;Additional or separate terms may apply to your use of other Westfield websites, services, or apps, or participation in any promotion. &nbsp;To the extent that the provisions of any additional terms conflict with these Terms and Conditions, the provisions of the additional terms will govern. By downloading, installing or using the Site, or accessing our website, you ("User", "you" or "your") agree to the Terms and Conditions below. &nbsp;</p>
+							   <p>To go directly to specific sections, please see below:</p>
+							   <p><a>I. GENERAL TERMS AND CONDITIONS AND RESTRICTIONS ON USE</a></p>
+							   <p><a>II. PRIVACY</a></p>
+							   <p><a>III. LINKS</a></p>
+							   <p><a>IV. REVIEWS, COMMENTS AND OTHER SUBMISSIONS</a></p>
+							   <p><a>V. DISCLAIMERS AND LIABILITY</a></p>
+							   <p><a>VI. VIRUS PROTECTION AND COMPATIBILITY</a></p>
+							   <p><a>VII. INDEMNIFICATION</a></p>
+							   <p><a>VIII. TERMINATION</a></p>
+							   <p><a>IX. DISPUTES</a></p>
+							   <p><a>X. MISCELLANEOUS</a></p>
+							   <p><b><a name="generalterms" id="generalterms"></a>I. GENERAL TERMS AND CONDITIONS AND RESTRICTIONS ON USE&nbsp;</b></p>
+							   <p><b>A. Access.</b> Subject to these Terms and Conditions, Westfield grants Users a limited, revocable, nonexclusive, nontransferable personal right to access and make use of the Site and services solely for the benefit of the User and no other commercial purpose. &nbsp;If you do not comply with these Terms and Conditions, Westfield reserves the right to revoke your licence or limit your access to the Site. Unless otherwise specified, the Site is directed solely at those who access it from the UK. Those who access the Site from locations outside of the UK are responsible for compliance with local laws if and to the extent local laws are applicable.&nbsp;</p>
+							   <p>Westfield reserves the right to remove any information or material on the Site without warning, and without prejudice to any other accrued rights, and/or make available such information or material when required to do so by law or when requested to do so by regulatory bodies or law enforcement organisations.</p>
+							   <p><b>B. Children.</b> The Site and related services are not aimed at nor intended for children under the age of 16. You must be 16 years of age or over to use the Site. &nbsp;If you are under 18 years of age (but over 16), you must obtain the consent of a parent or guardian before accessing or using the Site or creating a Registered Account (as described below).&nbsp;</p>
+							   <p><b>C. Copyrights and Trademarks.</b> All content and materials on the Site, such as text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations and software is the property of Westfield and/or third party licensors and protected by English and international copyright laws. &nbsp;All trade marks, service marks, and trade names (including the look and feel of the Site) are owned by Westfield. The content and materials are intended for your personal, non-commercial use. &nbsp;You may make one copy of the materials displayed on the Site for your personal, non-commercial use only. &nbsp;No right, title or interest in any content or materials is transferred to you as a result of any such copying. &nbsp;You may not otherwise reproduce, republish, upload, post, transmit, modify, create derivative works from, sell or distribute in any way the content and materials on the Site.</p>
+							   <p><b>D. Restrictions on Use.</b> You agree to use the Site and related services only for lawful purposes and to follow all applicable laws and regulations. While using the Services, you will not:&nbsp;</p>
+							   <p>. Violate any laws, regulations, third party rights, including intellectual property rights, or Westfield's policies; publish, post, distribute, disseminate or otherwise transmit, defamatory offensive, infringing, obscene, indecent or other unlawful or objectionable material or information;</p>
+							   <p>. Do anything to negatively affect Westfield's goodwill, name or reputation;</p>
+							   <p>. Modify, disrupt, impair, alter or interfere with the use, features, functions, operation or maintenance of the Site or the rights or use and enjoyment of the Site by any other person, company or enterprise (collectively, "Person"); or&nbsp;</p>
+							   <p>. Collect, obtain, compile, transmit, reproduce, delete, revise, display any material or information, whether personally identifiable or not, posted by or concerning any other Person in connection with use of the Site, unless you have obtained the express, prior permission of such other Person.</p>
+							   <p><b>E. Registration and Account Information.</b> To use the services offered through the Site, a User must register and create an account. &nbsp;To register and create an account, you must create login details (a username and password) and provide personal information ("Registered Account"). You agree to provide true, accurate and current information. You are not obliged to provide Westfield with any optional information requested. As a registered User, you must maintain confidentiality of your login details and remain responsible for all activities that occur within your Registered Account. &nbsp;Should you become aware of or suspect any unauthorised use(s) of your Registered Account, you will immediately notify Westfield. &nbsp;You will ensure that you log out of your Registered Account at the end of each session when accessing the additional services.</p>
+							   <p>You can use your Registered Account to access the additional services listed below. &nbsp;Please click on the links below to access the additional terms and conditions that apply specifically to each service.</p>
+							   <p>. <a>Terms&nbsp;and Conditions</a>&nbsp;to Smart Parking Services - see section below.&nbsp;<span style=""></span></p>
+							   <p><b>F. Card Authorisation.</b>&nbsp;When you set up your Registered Account you may need to add a payment card in order to make the most of some of the features on the Site.</p>
+							   <p>In order to verify your payment card when you add it to your Registered Account or when you update the payment card details, we may issue an 'authorisation hold' for a small amount to your card. This amount is never actually charged to your account, but you may see a "pending" charge for the authorised amount. For example you might see a temporary charge authorisation for GBP &#163;1 or less on your bank or card statement. It is independent of any payment transaction that you make using the Sites - i.e. it is not tied to a smart parking payment or another service. If your payment card issuing bank is in another country, you will see a pending charge for a similar amount in your regional currency.</p>
+							   <p>Westfield immediately voids the authorisation hold, but it may take a few business days for your card issuing bank to release the hold on your account; actual timing depending on your bank's policy.</p>
+							   <p>We issue authorisation holds as a way to protect against fraud that may result from unauthorised card usage and to ensure that your saved payment card can be used to pay for features requiring payment. If you would like to confirm a specific item on your statement, please contact your bank directly.</p>
+							   <p><b>G. Mobile Services.</b> The Site includes certain services that are available via a mobile device, including (i) the ability to browse the Site from a mobile device and (ii) the ability to access certain features through an application downloaded and installed on a mobile device (collectively, the "Mobile Services"). To the extent you access the Site through a mobile device, your mobile operator's standard charges, data rates and other fees may apply. In addition, downloading, installing, or using certain Mobile Services may be prohibited or restricted by your operator, and not all Mobile Services may work with all operators or devices. In the event you change or deactivate your mobile telephone number, you agree to promptly update your Registered Account information to ensure that your messages are not sent to any other person. The Site, some of its features or functionalities, may not be available on all devices. We do not guarantee that all or any features or functionalities of the Site will work on any particular device.&nbsp;</p>
+							   <p>If you use the Mobile Services you must also comply with the terms and conditions of the Apple App Store, Google Play or any other app store from which you download the Mobile Services. There may be updates to the Mobile Services and you are responsible for installing updates as prompted by your device or app store. You may not be able to access or use the Mobile Services unless you install updates.&nbsp;</p>
+							   <p><b>H. Content.</b> Westfield will do its best to make sure the Site is as up to date and accurate as possible. Unless specifically stated otherwise, Westfield is not responsible for the information on the Site and makes no warranty in respect of its timeliness, accuracy or availability. Westfield disclaims all liability arising from any reliance placed on such information to the fullest extent permissible by English law.</p>
+							   <p>In addition, where the Site contains details provided by third parties like information about shops or restaurants (including opening hours, menus and availability of stock), Westfield makes no promise that those details are up-to date or accurate.</p>
+							   <p>When we receive your complaint we may, in our sole discretion, remove or block access to the content complained of.</p>
+							   <p><b><a name="privacy" id="privacy"></a>II. PRIVACY</b></p>
+							   <p>When you create your Registered Account you will provide Westfield with personal information. Our Privacy Policy explains how we treat and protect your personally identifiable information and data ("Personal Information") when you use our Site. The terms and conditions of our Privacy Policy located at <a>https://uk.westfield.com/privac</a>y&nbsp;are expressly incorporated into these Terms and Conditions.</p>
+							   <p><b><a name="links" id="links"></a>III. LINKS</b></p>
+							   <p>Westfield or third parties may provide links to other websites or resources, including to retailer sites on the internet through the Site. Westfield has no control over such websites or resources. You agree that we are not responsible for the availability of other external websites or resources and are not responsible for any content, advertising, products, or materials on or available from such websites or resources. You access the other linked websites and resources at your own risk.&nbsp;</p>
+							   <p><b><a name="reviews" id="reviews"></a>IV. FEEDBACK, SUGGESTIONS AND OTHER SUBMISSIONS</b></p>
+							   <p>We welcome your feedback regarding our Site and services. &nbsp;We do not, however, accept confidential or proprietary information. All feedback, suggestions, ideas, materials, information and other submissions disclosed, submitted or offered to Westfield (collectively, "Submissions") are not confidential and will become and remain our property. Westfield will not be liable for any use or disclosure of any Submissions. Submissions by you must not violate any right of any third party, and must not contain any libelous, abusive, obscene or otherwise unlawful material.</p>
+							   <p><b><a name="disclaimers" id="disclaimers"></a>V. DISCLAIMERS AND LIABILITY</b></p>
+							   <p>Your use of the Site is entirely at your own risk. &nbsp;To the fullest extent possible, Westfield expressly excludes and disclaims all warranties, terms, conditions and representations that might otherwise be implied by law in relation to the Site, including, without limitation, warranties of technical efficiency, satisfactory quality, availability, non-infringement, completeness and fitness for a particular purpose. &nbsp;The material contained on the Site may contain inaccuracies and typographical errors. &nbsp;Westfield does not warrant the accuracy or completeness of the content and materials on the Site.</p>
+							   <p>The Site may contain advertisements. Westfield is not responsible for and does not endorse the content of such advertisements and does not accept any responsibility for any errors or inaccuracies in such advertisements.&nbsp;</p>
+							   <p>Westfield will not be liable for any damages whatsoever arising out of the use or performance of the Site, the provision of or failure to provide services, or for any information obtained through the Site, or otherwise arising out of the use of the Site, whether based on contract, tort, or otherwise, even if Westfield has been advised of the possibility of damage. &nbsp;</p>
+							   <p>If you are dissatisfied with any portion of the Site, or with any of these Terms, your sole remedy, except as specifically provided in these terms, is to stop using the Site.</p>
+							   <p>Notwithstanding anything in these Terms, Westfield does not disclaim liability for death or injury caused by our direct negligence, fraudulent misrepresentation, and/or anything else that cannot be excluded or limited by English law.</p>
+							   <p><b><a name="virusprotection" id="virusprotection"></a>VI. VIRUS PROTECTION AND COMPATIBILITY</b></p>
+							   <p>While certain precautions have been taken to detect computer viruses and ensure security, Westfield cannot guarantee that the Sites are virus-free and secure. Westfield will not be liable for any loss or damage which occurs as a result of any virus or breach of security. &nbsp;Westfield does not give any warranties as to the compatibility of the Sites with your computer systems, software and/or hardware.</p>
+							   <p><b><a name="indemnification" id="indemnification"></a>VII. INDEMNIFICATION</b></p>
+							   <p>If you use the Site in any way that results in damage to Westfield, you will need to take responsibility for such damage. You agree to indemnify Westfield and our officers, employees and licensors from and against any and all losses as a result of your access or use of the Site or breach of these Terms and Conditions.</p>
+							   <p><b><a name="termination" id="termination"></a>VIII. TERMINATION</b></p>
+							   <p>These Terms and Conditions are effective unless and until terminated by Westfield. You may terminate these terms at any time by discontinuing use of the Site and destroying all materials obtained from your use of the Site. Your access to the Site may be terminated immediately without notice from us if, in our sole discretion, you fail to comply with any term or provision of these Terms and Conditions.&nbsp;</p>
+							   <p><b><a name="disputes" id="disputes"></a>IX. DISPUTES</b></p>
+							   <p><b>A. Questions</b>. Please contact us at <a>help@westfield-uk.com</a>&nbsp;if you have any questions or concerns that need our assistance.</p>
+							   <p><b>B. Applicable Law.</b> You agree that the Terms and Conditions are governed by and interpreted in accordance with the laws of England and any disputes will be decided only by English courts.&nbsp;</p>
+							   <p><b>C. Rights of Third Parties</b>. Save for Westfield, none of these Terms and Conditions will be enforceable under the Contracts (Rights of Third Parties) Act 1999 by any third party. &nbsp;</p>
+							   <p><b><a name="misc" id="misc"></a>X. MISCELLANEOUS</b></p>
+							   <p><b>A. Entire Agreement. </b>These Terms and Conditions, together with our Privacy Policy, any additional terms, rules, or other policies to which Westfield refers contain the entire agreement between you and Westfield and supersedes any prior or other agreements concerning the subject matter of the Terms and Conditions.</p>
+							   <p><b>B. Waiver.</b> No delay or omission by Westfield or you in exercising any right under these Terms and Conditions will operate as a waiver of that or any other right. &nbsp;</p>
+							   <p><b>C. Modification.</b> We reserve the right to modify these Terms and Conditions or any additional terms that apply to the Site, at any time without notice. You should review these Terms and Conditions regularly. Your continued access or use of the Site after the Terms and Conditions have been revised constitutes your express consent to the modified Terms and Conditions.&nbsp;</p>
+							   <p><b>D. Severability.</b> If a particular term or condition is deemed unenforceable, invalid or void, that term or condition will be deemed severable and not affect the validity and enforceability of any remaining terms or conditions.</p>
+							   <p><b>E. Exclusions.</b> The express provisions of these Terms and Conditions are in place of all warranties, conditions, terms, undertakings and obligations implied by statute, common law, custom, trade usage, course of dealing or otherwise, all of which are excluded to the fullest extent permitted by law.</p>
+							   <p>These Terms and Conditions were last modified in March 2017 and are effective immediately.</p>
+							   <p>&nbsp;</p>
+							</div>
+						 </div>
+					  </section>
+				   </div>
+				   <div>
+					  <hr>
+				   </div>
+				   <div>
+					  <section class="     " style="height:auto;">
+						 <div class="">
+							<h2>Additional Terms and Conditions of Entry to Westfield Europe Shopping Centres</h2>
+							<div>
+							   <li><span><a name="clickhere" id="clickhere"></a>24 hour uniformed and plain clothed security operate at Westfield London and Westfield Stratford City</span></li>
+							   <li><span>Uniformed and plain clothed police operate at Westfield London and Westfield Stratford City</span></li>
+							   <li><span>Smoking is not permitted in-centre</span></li>
+							   <li><span>Only guide dogs are allowed in-centre</span></li>
+							   <li><span>CCTV images are being recorded for your safety and security. This system is controlled by Westfield Europe Limited.&nbsp;For further information on how we use your information for safety and security purposes, your rights, and how you can contact us please see our <a>privacy notice&nbsp;</a></span></li>
+							   <li><span>Photography is not permitted without permission.</span></li>
+							   <li><span>Bicycles, skateboards, scooters and other leisure transportation devices are not permitted in-centre.</span></li>
+							</div>
+						 </div>
+					  </section>
+				   </div>
+				   <div>
+					  <hr>
+				   </div>
+				   <div>
+					  <section class="     " style="height:auto;">
+						 <div class="">
+							<h2>Additional Terms and Conditions of Use Westfield Product Browse Services</h2>
+							<div>
+							   <p><a name="productbrowse" id="productbrowse"></a>In addition to the Terms and Conditions found at <a>https://uk.westfield.com/terms-and-conditions</a>, the following terms and conditions of use ("Product Browse Terms") apply to your use of the Product Browsing services ("Search Services") on the Site. By accessing and using the Site and Search Services, you agree to the Terms and Conditions and Product Browse Terms below. To the extent there exists a conflict between the Terms and Conditions and Product Browse Terms; these Product Browse Terms will take precedence. Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
+							   <p><b>Search Services</b></p>
+							   <p>Through the Site, Westfield offers Search Services for selected retailers listed on the Site (the "Shops"). Please check the Site for details about availability as the Search Services are not available for every shop.</p>
+							   <p>The Site allows you to browse a range of products from different Shops.&nbsp; If you need further information or decide to make a purchase, each of the products listed contains a link to the Shop's website. When you buy a product via the Site you acknowledge that you are entering a contract with the Shop, not with Westfield.</p>
+							   <p>Westfield is not responsible for the accuracy of any statement or advice contained in the text or advertisements. Westfield is also not responsible for any price variations or errors or availability or quality of any products listed on our Site. All prices are provided by the Shops. You should review the Shop's website for the most accurate information about price and availability. Westfield cannot guarantee that the stock levels shown on the Site accurately reflect a Shop's inventory. We recommend that you call the Shop for the product of interest before travelling to the Shop.</p>
+							   <p><b>Modification</b></p>
+							   <p>Like the Terms and Conditions, we may modify the Product Browse Terms at any time without notice.&nbsp; You should review the Product Browse Terms regularly. Your continued access or use of the Product Browse Services constitutes your express consent to any modified Product Browse Terms.</p>
+							   <p><b>General</b></p>
+							   <p><u>Waiver.</u> No delay or omission by Westfield or you in exercising any right under these Product Browse Terms will operate as a waiver of that or any other right.&nbsp;</p>
+							   <p><u>Severability.</u> If a particular term or condition of these Product Browse Terms is deemed unenforceable, invalid or void, that term or condition shall be deemed servable and not affect the validity and enforceability of any remaining terms or conditions.</p>
+							   <p><u>Liability.</u> Nothing in these Product Browse Terms shall affect your statutory rights. To the fullest extent possible, Westfield excludes all liability arising out of your use of the Search Services or your use of the Site. Notwithstanding the foregoing, we do not disclaim liability for death or injury caused by our direct negligence, fraudulent misrepresentation, and/or anything else that cannot be excluded or limited by English law.</p>
+							   <p><u>Enforcement.</u>&nbsp; Enforcement of these Product Browse Terms is solely at our discretion. Westfield does not lose the right to enforce these Product Browse Terms should Westfield choose not to enforce them in some circumstances.</p>
+							   <p><u>Exclusions.</u> The express provisions of these Product Browse Terms are in place of all warranties, conditions, terms, undertakings and obligations implied by statute, common law, custom, trade usage, course of dealing or otherwise, all of which are excluded to the fullest extent permitted by law.</p>
+							   <p><u>Applicable Law.</u>&nbsp; You agree that the these Product Browse Terms shall be governed by and interpreted in accordance with the laws of England and any disputes will be decided only by English courts.</p>
+							   <p><b>Questions? Concerns?</b> Please contact us at <a>help@westfield-uk.com</a>&nbsp;to ask any questions about the Product Browse Terms.&nbsp; For questions about the products you have viewed, bought or returned using the Site please contact the relevant Shop from which you purchased the products.</p>
+							   <p>These Product Browse Terms were last modified in October 2016 and are effective immediately.<b></b></p>
+							</div>
+						 </div>
+					  </section>
+				   </div>
+				   <div>
+					  <hr>
+				   </div>
+				   <div>
+					  <section class="     " style="height:auto;">
+						 <div class="">
+							<h2>Additional Terms and Conditions of Use Interactive Maps Services</h2>
+							<div>
+							   <p>In addition to the Terms and Conditions of Use found at <a>https://uk.westfield.com/terms-and-conditions</a>, the following terms and conditions of use ("Interactive Maps Terms") apply to your use of the Interactive Maps Services (defined below) on the Site.&nbsp; By accessing and using the Site and Interactive Maps Services, you agree to the Terms and Conditions and Interactive Maps Terms below.&nbsp; To the extent there exists a conflict between the Terms and Condititons and Interactive Maps Terms; the Interactive Maps Terms will take precedence.&nbsp; Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
+							   <p><b>Interactive Maps Services</b></p>
+							   <p>Through the Site, Westfield offers Services to locate places of interest and help you find your way around Westfield shopping centres ("Interactive Maps Services").</p>
+							   <p>We do our best to provide you with the most up-to-date information via the Interactive Maps Services but cannot guarantee accuracy of the Interactive Maps Services.</p>
+							   <p><b>Modification</b></p>
+							   <p>Like the Terms and Conditions, we may modify the Interactive Maps Terms at any time without notice.&nbsp; You should review the Interactive Maps Terms regularly. Your continued access or use of the Interactive Maps Services constitutes your express consent to any modified Interactive Maps Terms.</p>
+							   <p><b>General</b></p>
+							   <p><u>Waiver</u>. No delay or omission by Westfield or you in exercising any right under these Interactive Maps Terms will operate as a waiver of that or any other right.&nbsp;</p>
+							   <p><u>Severability</u>. If a particular term or condition of these Interactive Maps Terms is deemed unenforceable, invalid or void, that term or condition shall be deemed servable and not affect the validity and enforceability of any remaining terms or conditions.</p>
+							   <p><u>Liability</u>. Nothing in these Interactive Maps Terms shall affect your statutory rights. To the fullest extent possible, Westfield excludes all liability arising out of your use of the Interactive Maps Services or your use of the Site. Notwithstanding the foregoing, we do not disclaim liability for death or injury caused by our direct negligence, fraudulent misrepresentation, and/or anything else that cannot be excluded or limited by English law.</p>
+							   <p><u>Enforcement</u>.&nbsp; Enforcement of these Interactive Maps Terms is solely at our discretion. Westfield does not lose the right to enforce these Interactive Maps Terms should Westfield choose not to enforce them in some circumstances.</p>
+							   <p><u>Exclusions.<b> </b></u>The express provisions of these Interactive Maps Terms are in place of all warranties, conditions, terms, undertakings and obligations implied by statute, common law, custom, trade usage, course of dealing or otherwise, all of which are excluded to the fullest extent permitted by law.</p>
+							   <p><u>Applicable Law</u>.&nbsp; You agree that the these Interactive Maps Terms shall be governed by and interpreted in accordance with the laws of England and any disputes will be decided only by English courts.</p>
+							   <p><b>Questions? Concerns?</b> Please contact us at <a>help@westfield-uk.com</a> to ask any questions about the Interactive Maps Terms.</p>
+							   <p>These Interactive Maps Terms were last modified in October 2016 and are effective immediately.</p>
+							</div>
+						 </div>
+					  </section>
+				   </div>
+				   <div>
+					  <hr>
+				   </div>
+				   <div>
+					  <section class="     " style="height:auto;">
+						 <div class="">
+							<h2>Additional Terms and Conditions for Westfield Smart Parking Services</h2>
+							<div>
+							   <p>In addition to the Terms and Conditions found at&nbsp;<a>https://uk.westfield.com/terms-and-conditions</a>, the following Terms and Conditions ("Smart Parking Terms") apply to your use of the smart parking services ("Smart Parking Services") on the Site.&nbsp; By accessing and using the Site and Smart Parking Services, you agree to the Terms and Conditions and Smart Parking Terms below.&nbsp; To the extent there exists a conflict between the Terms and Conditions and Smart Parking Terms; the Smart Parking Terms will take precedence.&nbsp; Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
+							   <p><b>Smart Parking Services</b></p>
+							   <p>Through the Site, Westfield offers Smart Parking at Westfield London and Westfield Stratford City ("Smart Parking").&nbsp; Please check the Site for details about availability of Smart Parking at the Westfield location you are visiting.</p>
+							   <p><u>Registration</u></p>
+							   <p>You are required to create a Registered Account via the Site before using certain features of the Smart Parking Services.&nbsp; Please refer to the Terms and Conditions&nbsp;<a>above</a>&nbsp;for more information. You must also complete the online registration form via the Site to use the Smart Parking Services. To use the Smart Parking Services, you must be 18 years of age or older and hold a valid driving license in the UK. Westfield reserves the right to deny any Smart Parking registration in its absolute discretion. Any failure to comply with these Smart Parking Terms will automatically render your registration void.</p>
+							   <p>It is not possible to redeem any other parking offer while parking using the Smart Parking service.</p>
+							   <p><u>Using Your Smart Parking with Automatic Number Plate Recognition ("ANPR")</u></p>
+							   <p>Any Smart Parking user who enters the Westfield London or Westfield Stratford car park using number plate recognition must exit via the same method.&nbsp; Westfield accepts no liability for any loss you may suffer as a result of your inability to redeem any parking offer.</p>
+							   <p><u>Entry to and use of Smart Parking Services at Westfield London and Westfield Stratford</u></p>
+							   <p>Your entry to and use of the Smart Parking Services Westfield London car park and Westfield Stratford car park remains subject to the Westfield London Car Park Terms and Conditions located <a>here</a> and Westfield Stratford City Car Park Terms and Conditions located <a>here</a> and displayed in the Westfield London and Westfield Stratford City car park offices.</p>
+							   <p><u>Prices</u></p>
+							   <p>The Smart Parking Services entitles the registered user to park at the Westfield London or Westfield Stratford car park at capped tariffs. Tariffs are listed here:</p>
+							   <p>- Westfield London:&nbsp;<a>https://uk.westfield.com/london/parking-how-it-works</a><u></u></p>
+							   <p>- Westfield Stratford: <a>https://uk.westfield.com/stratfordcity/parking-how-it-works</a></p>
+							   <p>Any change in Smart Parking tariffs will be communicated to you via the email address associated with your Registered Account. Please ensure that your Registered Account details are accurate at all times in order to receive such communications.</p>
+							   <p>Each time the registered vehicle enters and exits the car park, the tariff will be charged to the registered payment card.&nbsp;Payments will show as being processed by Commerz Real Investmentgesellschaft mbH - Westfield, or Westfield Stratford City Car Park, depending on the centre you visited. In the event that a parking charge to your current payment card is declined, you agree to allow Westfield to settle your outstanding parking charge to your new payment card registered for use with the Smart Parking Service. Westfield reserves the right to suspend your ability to use the Smart Parking Service until any such outstanding balance due is settled on your new payment card.</p>
+							   <p><u>Smart Parking is not valid in conjunction with any other offer</u></p>
+							   <p>If you enter the car park in a vehicle registered for Smart Parking, you will be charged the appropriate Smart Parking fee upon exit.</p>
+							   <p><b>Modification</b></p>
+							   <p>Like the Terms and Conditions, we may modify the Smart Parking Terms at any time without notice. You should review the Smart Parking Terms regularly. Your continued access or use of the Smart Parking Services constitutes your express consent to any modified Smart Parking Terms.</p>
+							   <p><b>General</b></p>
+							   <p><u>Waiver</u>. No delay or omission by Westfield or you in exercising any right under these Smart Parking Terms will operate as a waiver of that or any other right.&nbsp;</p>
+							   <p><u>Severability</u>. If a particular term or condition of these Smart Parking Terms is unenforceable, invalid or void, that term or condition shall be deemed servable and not affect the validity and enforceability of any remaining terms or conditions.</p>
+							   <p><u>Liability</u>. Nothing in these Smart Parking Terms will affect your statutory rights. To the fullest extent possible, Westfield excludes all liability arising out of your use of the Smart Parking Services or your use of the Site. Notwithstanding the foregoing, we do not disclaim liability for death or injury caused by our direct negligence, fraudulent misrepresentation, and/or anything else that cannot be excluded or limited by English law.</p>
+							   <p><u>Enforcement</u>.&nbsp; Enforcement of these Smart Parking Terms is solely at our discretion. Westfield does not lose the right to enforce these Smart Parking Terms should Westfield choose not to enforce them in some circumstances.</p>
+							   <p><u>Exclusions.<b>&nbsp;</b></u>The express provisions of these Smart Parking Terms are in place of all warranties, conditions, terms, undertakings and obligations implied by statute, common law, custom, trade usage, course of dealing or otherwise, all of which are excluded to the fullest extent permitted by law.</p>
+							   <p><u>Applicable Law</u>.&nbsp; You agree that the these Smart Parking Terms are governed by and interpreted in accordance with the laws of England and any disputes will be decided only by English courts.</p>
+							   <p><b>Questions? Concerns?</b>&nbsp;Please contact us at&nbsp;<a>help@westfield.com</a>&nbsp;to ask any questions about the Smart Parking Terms or your Smart Parking registration.&nbsp;</p>
+							   <p>These Smart Parking Terms were last modified in March 2017 and are effective immediately.</p>
+							   <div>
+								  <hr>
+							   </div>
+							   <div>
+								  <section class="     " style="height:auto;">
+									 <div class="">
+										<h2>Westfield Club Loyalty Programme Cashback Terms and Conditions (Effective 16 November 2021)</h2>
+										<div>
+										   <p>1. These terms and conditions (as revised or varied from time to time with notice) shall apply to your membership of the Westfield Club Loyalty Programme ("<strong>Westfield Club</strong>") and the allocation of Westfield Points on qualifying purchases made by you at the Centre.</p>
+										   <p>2. The Westfield Club enables you to earn Qualifying Points at the Centre when paying for goods or services subject to the following:</p>
+										   <p style="margin-left: 40px;">a) The Westfield Club is promoted by Westfield ('<strong>we</strong>') and is available to all persons who submit a completed application form and are accepted for a Loyalty Account or to whom we make the Westfield Club available.<br> b) The Westfield Club is only available to Loyalty Accounts with a UK, Channel Islands, Isle of Man (IoM) or BFPO address.<br> c) Membership of the Westfield Club is entirely at our discretion, and accordingly, we reserve the right to refuse any application.</p>
+										   <p>3. All expressions here will have the same meanings as set out in these Terms and Conditions except where the context otherwise requires or where express stated to the contrary below:</p>
+										   <p>"<strong>Cashback</strong>" refers to the right of the Member to receive cash remitted to their Card Accounts in accordance with paragraph 6 below.</p>
+										   <p>"<strong>Centre</strong>" refers to Westfield London situated at Ariel Way, London W12 7SL or Westfield Stratford City situated at Montfichet Road, London E20 1EJ</p>
+										   <p>"<strong>Excluded Purchases</strong>" means or includes:</p>
+										   <p style="margin-left: 40px;">(i) refunded, disputed, unauthorized or fraudulent retail transactions;<br> (ii) gift vouchers;<br> (iii) purchases made online or click &amp; collect purchases;<br> (iv) purchases of tobacco;<br> (v) purchases from vending machines;<br> (vi) purchases from experiential activations, kiosks and pop-ups;<br> (vii) fees paid in respect of gym membership or healthcare services;<br> (viii) purchases of foreign currency or other purchases at any bureau de change;<br> (ix) any spend at a gambling shop, casino or outlet including but not limited to a casino;<br> (x) the withdrawal of cash from any banking ATMs; and/or<br> (xi) any spend at outlets that are designated as excluded by Westfield Club from time to time.</p>
+										   <p>"<strong>Loyalty Account</strong>" means the Member's account under the Westfield Club.</p>
+										   <p>"<strong>Members</strong>" is defined as individuals who are subscribed and have been accepted as a member of the Westfield Club for a Centre and whose memberships remains valid at the time of the Cashback.</p>
+										   <p>"<strong>Membership Year</strong>" refers to the period of 12 (twelve) months from the date of a Member being accepted as a Loyalty Account member.</p>
+										   <p><strong>"Retailers</strong>" refers to the retailers at the Centre.</p>
+										   <p>"<strong>Qualifying Financial Institutions</strong>" means the list of financial institutions in which you are able to use to join the Westfield Club Loyalty Programme which includes but are not limited to:</p>
+										   <ul>
+											  <li>American Express (credit card)</li>
+											  <li>Bank of Scotland</li>
+											  <li>Barclays</li>
+											  <li>Capital One (credit card)</li>
+											  <li>Halifax</li>
+											  <li>HSBC</li>
+											  <li>Lloyds Bank</li>
+											  <li>MBNA (credit card)</li>
+											  <li>Nationwide</li>
+											  <li>NatWest</li>
+											  <li>Revolut</li>
+											  <li>Royal Bank of Scotland</li>
+											  <li>Santander</li>
+											  <li>Tesco Bank</li>
+											  <li>TSB</li>
+											  <li>Virgin Money</li>
+										   </ul>
+										   <p>"<strong>Qualifying Points</strong>" means the points earned by a Member for any Qualifying Retail Spend as set out in paragraph 4 below.</p>
+										   <p>"<strong>Qualifying Purchases</strong>" means all Qualifying Retail Spend by a Member in a single transaction at a Retailer other than Excluded Purchases that has a value of at least &#163;20 for each purchase.</p>
+										   <p>"<strong>Qualifying Retail Spend</strong>" is defined as the total retail transactions being the purchases of goods and/or services completed within each Qualifying Period at any of the Retailers at the Centre other than Excluded Purchases.</p>
+										   <p>"<strong>Westfield Club</strong>" refers to the loyalty programme providing benefits to the Members for their Retail Spend at the Centre.</p>
+										   <p>4. Members can earn points for Qualifying Purchases made at any Retailers, and on other purchases or offers that Westfield may notify you from time to time at the rate of 10 (ten) points for each Qualifying Purchase in excess of &#163;20 (Twenty Pounds). For the avoidance of doubt, Qualifying Points are only earned for each and every Qualifying Purchase and not earned based on the value of the Qualifying Purchase (see illustrations below). </p>
+										   <p>Illustrations:</p>
+										   <p>Example 1:</p>
+										   <p>Spend at a retailer of &#163;20</p>
+										   <p>Qualifying Points for the spend: 10 points</p>
+										   <p>Example 2:</p>
+										   <p>Spend at a retailer of &#163;400</p>
+										   <p>Qualifying Points for the spend: 10 points</p>
+										   <p>Example 3:</p>
+										   <p>Spend at a retailer of &#163;10.00</p>
+										   <p>Qualifying Points for the spend: 0 points</p>
+										   <p>5. Members will earn Qualifying Points on each Qualifying Purchase from the date it is posted to the Member's Loyalty Account.&nbsp;The Qualifying Points a Member earns will be reduced by the amount of any Excluded Purchases that are refunded or returned by the Member to a Retailer. Qualifying Points have no expiry date provided the Member makes a Qualifying Purchase at the Centre once in each Membership Year.</p>
+										   <p>6. The minimum number of Qualifying Points to entitle a Member for a Cashback is 200 (Two Hundred) Qualifying Points.&nbsp;A Cashback will only be credited to and made available on the card that is linked to your account when a minimum amount of &#163;10.00 (Ten Pounds) is met from any of the Qualifying Financial Institutions. Any Cashbacks issued will be valid for a period of two (2) months and will be credited against purchases made in person at retailers in the Centre. Cashbacks that are presented after the expiry date stated will not be valid. </p>
+										   <p>7. The maximum number of Cashbacks that a Member can earn in any Westfield Club Year is 4 (four). For the avoidance of doubt, whilst you can continue to collect Qualifying Points until you reach the 200 point threshold, no further cashbacks will be issued until the new membership year.</p>
+										   <p>8. The Retailers, Excluded Purchases and the Cashback rewards (including, rates, earn, collection and capping) are subject to periodic review and change by Westfield. All decisions regarding the foregoing will be final and binding. For the avoidance of any doubt, Qualifying Purchases cannot be accumulated to gross-up the retail spend for another loyalty programme that is managed or operated by any Retailer or any third party provider other than Westfield. </p>
+										   <p>9. Westfield may notify Members from time to time of any special promotions where Members can earn extra Points. We may from time to time offer you Loyalty Account bonus points for specific promotions, subject to availability, but you will always be advised of the bonus points when the offer is made.</p>
+										   <p>10. We reserve the right to vary the Qualifying Points available, and the rate at which points will be allocated, from time to time or to cease to offer Qualifying Points. Any change will be notified by the display of notices in our Centre, advised to you in loyalty emails, or by advertising on our website.</p>
+										   <p>11. Qualifying Points, bonus points or Cashbacks cannot be transferred from one person or Loyalty Account to another unless specifically notified and agreed by us.</p>
+										   <p>12. We reserve the right not to send Members an email in the event that the Qualifying Points balance has not changed from the previous statement, or insufficient points have been earned to generate Cashback.</p>
+										   <p>13. The Member acknowledges that there may be a lapse of time between a Qualifying Purchases being made and the crediting of the Qualifying Points and/or Cashbacks. Westfield does not represent or warrant that the Cashback will be immediately reflected in the Member's statement. </p>
+										   <p>14. Any Cashback, including cashback which is pending credit into the Member's Loyalty Account, will become invalid upon the occurrence of any one of the following:</p>
+										   <p style="margin-left: 40px;">(i) any cancellation, termination or suspension of the Cashback rights, whether voluntary or involuntary; and/or<br> (ii) if the Member has committed or suspected to have committed any fraudulent, wrongful or unlawful acts or have not fulfilled or breached his/her obligations, in relation to the Member's Westfield Loyalty Club Account or these terms and conditions.</p>
+										   <p>For the avoidance of doubt, if any of the above occurs, no refund, extension or compensation will be given by Westfield.</p>
+										   <p>15. Westfield has the right to cancel, terminate or suspend the Cashback by giving prior adequate notice to Members. For the avoidance of doubt, any such cancellation, termination or suspension by Westfield of the Cashback will not entitle the Cardmember to any compensation from Westfield for any loss or damage suffered by the Cardmember, whether directly or indirectly, as a result of such cancellation, termination or suspension. </p>
+										   <p>16. If Cashback is awarded to Members or persons who have committed or suspected of committing any fraudulent, wrongful or unlawful acts in relation to the Westfield Club or any facility, service and/or accommodation provided by Westfield, Westfield reserves the right to disqualify such Members or persons from earning or using the Cashback. Such acts may result in forfeiture of any Cashback earned as well as cancellation or termination (whether voluntary or involuntary) of the Member's right to be party to the Westfield Club. </p>
+										   <p>17. Westfield will not be liable for any default due to any act of God, war, riot, strike, lockout, industrial action, fire, flood, drought, storm, epidemic, pandemic, technical or system failure or any event beyond the reasonable control of Westfield. </p>
+										   <p>18. Your membership of the Westfield Club starts when your Account is opened, or when we determine the Westfield Club is available to you and ends when your Account is closed or when we determine that the Westfield Club is no longer in operation. </p>
+										   <p>19. We reserve the right to withdraw or cancel the Westfield Club at any time giving Members seven days' notice in writing.</p>
+										   <p>20. We reserve the right to change or amend the terms and conditions of the Westfield Club. Any changes will be notified by the display of notices in our Centre, advised in writing or advertised on our website.</p>
+										   <p>21. We reserve the right to take any appropriate action where the Member has breached the terms and conditions of the Westfield Club. </p>
+										   <p>22. In the case of dispute, the decision of Westfield shall be final. Please make sure your Loyalty Account details are kept up-to-date and accurate to minimise security risks. We cannot be responsible for non-receipt of Cashback.</p>
+										   <p>23. These terms and conditions do not affect your legal rights.</p>
+										   <p>24. You understand that membership of the Westfield Club will mean that our affiliates, subsidiaries, parent holding companies and other approved organisations may aggregate or use transactional data only for the purposes of analysis and so that specific Westfield Club offers may be made to you in accordance with <a>our privacy policy</a>. You may unsubscribe from receiving Westfield Club marketing communications at any time.</p>
+										   <p>25. The Members agree that their continued usage of the Westfield Club constitutes their acceptance of these Westfield Club terms and conditions as changed or varied from time to time).</p>
+										   <p>26. Westfield manages and operates the Westfield Club and is neither a partner nor joint venture partner, affiliated entity or subsidiary of any participating merchants, suppliers or Retailers. Westfield shall not be responsible for any defect or any other loss or damage that may be suffered in connection with any goods or services purchased by Members. Westfield expressly excludes and disclaims any, representations, warranties, or endorsements, expressed or implied, written or oral, including but not limited to, any warranty of quality, merchantability or suitability or fitness for a particular purpose in respect of any goods or services. Any dispute in relation to the warranty or quality of any goods or services or any terms and conditions in respect thereof shall be settled directly between the Member and the relevant merchant, supplier or Retailer. Westfield will bear no responsibility for resolving any dispute. </p>
+										   <p>27. To the fullest extent permitted by law, Westfield (including its officers, servants, employees, representatives and/or agents, including any third parties) is not liable for any loss or damages which may arise in connection with the Cashback. </p>
+										   <p>28. Any terms and conditions applicable to these terms and conditions which are illegal, prohibited or unenforceable under any law or regulation shall be ineffective to the extent of such illegality, voidness, prohibition or unenforceability without invalidating the remaining provisions.</p>
+										   <p>31. These terms and conditions are governed by and construed under the laws of England.&nbsp;</p>
+										</div>
+									 </div>
+								  </section>
+							   </div>
+							   <div>
+								  <hr>
+							   </div>
+							</div>
+						 </div>
+						 <div> </div>
+					  </section>
+				   </div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="privacyBlock" class="contentBlockText">
+			<div class="leftLine">
+				<span style="font-size: 18px">Privacy Policy</span>
+				<a href="javascript:showLogin()"><img src="close.png" style="float: right; width: 15px; height: 15px" alt="Close"></a>
+			</div>
+			<div class="leftLine">
+				<div class="contentBlockTextScrollingSection">
+				   <h1 class="page-title text-uppercase" style="text-align:center;"> PRIVACY NOTICE</h1>
+				   <p>This Privacy Notice ("<strong>Privacy Notice</strong>" or "<strong>Notice</strong>") was last updated on 2nd June 2021.</p>
+				   <h2>1.&nbsp;&nbsp;&nbsp;&nbsp; Introduction</h2>
+				   <p>This Notice describes the types of personal information ("Information") collected on our websites and mobile applications ("Online Services") and in our centres ("Centres"). It explains:</p>
+				   <ul>
+					  <li><a href="#1" class="scrollTo">How Do We Collect And Use Your Information?</a></li>
+					  <li><a href="#2" class="scrollTo">How Do We Share Your Information?</a></li>
+					  <li><a href="#3" class="scrollTo">Use Of Children's Information</a></li>
+					  <li><a href="#4" class="scrollTo">How Long Do We Keep Your Information?</a></li>
+					  <li><a href="#5" class="scrollTo">How Do We Keep Your Information Secure?</a></li>
+					  <li><a href="#6" class="scrollTo">When Do We Transfer Your Information Overseas?</a></li>
+					  <li><a href="#7" class="scrollTo">Your Rights In Relation To Your Information</a></li>
+					  <li><a href="#8" class="scrollTo">Links To Other Websites</a></li>
+					  <li><a href="#9" class="scrollTo">Changes To This Privacy Policy</a></li>
+					  <li><a href="#10" class="scrollTo">How To Contact Us</a></li>
+				   </ul>
+				   <h3>Data Controllers</h3>
+				   <p>The data controllers of the data we collect from you are:</p>
+				   <ul>
+					  <li>Westfield Europe Limited ("<strong>Westfield</strong>") (incorporated in England and Wales with registered number 03912122 and registered office at 4th&nbsp;Floor, 1 Ariel Way, London, W12 7SL)&nbsp; (registered with the Information Commissioner's Office with registration number Z5539526); and</li>
+					  <li>Unibail Management S.A.S.,7 place du Chancelier Adenauer, 75016 Paris, France, registered with the Registry of Commerce and Companies of Paris under number 414878389 ("Group Data Controller"),</li>
+				   </ul>
+				   <p>(each a "<strong>Data Controller</strong>" and together referred to as the "<strong>Data Controllers</strong>").</p>
+				   <h3>Data Privacy Team</h3>
+				   <p>Westfield's Data Privacy Team may be contacted by email at&nbsp;<a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">dpo@urw.com</a>&nbsp;or via post at Westfield Europe Limited, 4th&nbsp;Floor, 1 Ariel Way, London, W12 7SL.</p>
+				   <h2><a name="1" id="1"></a>2.&nbsp;&nbsp;&nbsp;&nbsp; HOW DO WE COLLECT AND USE YOUR INFORMATION?</h2>
+				   <h3>Online Services</h3>
+				   <p><strong>Information you give to us:&nbsp;</strong>When you subscribe to or book any of the following services online, you will be requested to provide the following information to us directly for the purposes set out below:</p>
+				   <ul>
+					  <li><strong>Shopmobility (including Kiddy Car, wheelchair and scooter rental):</strong>&nbsp;First name, surname, email address and contact number, for the purposes of processing your booking and providing you with the service;</li>
+					  <li><strong>E-newsletter:</strong>&nbsp;First name and email address, for the purposes of obtaining your consent to subscribe to electronic marketing communications;</li>
+					  <li><strong>Personal Styling, Fashion Lounge and meeting room bookings:</strong>&nbsp;first name, surname, email address and contact number, for the purposes of processing your booking and providing you with the service.</li>
+				   </ul>
+				   <p><strong>Creating a Smart Parking account:</strong>&nbsp;If you create a Smart Parking account we will collect your email address, vehicle registration numbers and payment card details.&nbsp; The lawful basis for the processing of this information is to provide you with a contract of service that you have requested.&nbsp; If you have any queries about your Smart Parking account please contact&nbsp;<u><a href="mailto:help@urw.com" _rte_href="mailto:help@urw.com">help@urw.com</a></u>&nbsp;or&nbsp;<a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">dpo@urw.com</a>. </p>
+				   <p><strong>Marketing and competitions</strong>: When you create an account, enter a competition or register for an event you may be asked if Westfield can also use your Information for marketing purposes.&nbsp; The lawful basis for these marketing communications is your consent.&nbsp; If you do provide consent, you can subsequently unsubscribe from these communications by: following the unsubscribe link on the email; from your online Westfield account if you have one; or by&nbsp;<u><a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">emailing us</a></u>&nbsp;at&nbsp;<a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">dpo@urw.com</a>.</p>
+				   <p><strong>Information we collect automatically from your device</strong>: We may collect Information when you use our Online Services. For example, information about your use of our Online Services, including the time and duration of your visit, the referring URL, your Internet Protocol (IP) address, the type of device you use and its operating system, advertising identifiers, and other device identifiers. The lawful basis for the processing of this Information is for the legitimate interests of Westfield.</p>
+				   <p><strong>Cookies and similar technologies:</strong>&nbsp;Westfield and its partners use cookies and similar technologies when you use our Online Services. For more information on our use of cookies, including how to manage your cookie preferences, see our&nbsp;<u><a href="https://uk.westfield.com/cookies" _rte_href="https://uk.westfield.com/cookies">Cookie Policy</a></u>.</p>
+				   <p><strong>Advertising.</strong>&nbsp;Westfield uses the Information you provide us to help us tailor and show advertisements to you. We may partner with third parties to help us display relevant advertising and to manage our advertising across multiple channels. Our third-party partners may use cookies and non-cookie based technologies in order to help us show you advertising based upon your browsing activities and interests.</p>
+				   <p><strong>If you apply for a job with us:&nbsp;</strong>If you apply for a job at Westfield through our recruitment website you will be provided with a detailed privacy notice for recruitment and selection as part of the application process.</p>
+				   <h2><a name="2"></a>3.&nbsp;&nbsp;&nbsp;&nbsp; Collection of Information in our Centres</h2>
+				   <p><strong>Concierge Services:</strong>&nbsp;If you use our Concierge services and other facilities in our Centres, we will collect the Information necessary to provide you with the products or services you have requested. The lawful basis for the collection of this data is for the performance of a contract that we are entering into with you at your request.</p>
+				   <p><strong>Management of our Centres</strong>: In the course of running our centres, we may collect Information on incidents and accidents that occur, as well as using CCTV and other security measures for your and our protection.&nbsp;Click&nbsp;<u><a href="https://uk.westfield.com/safeguarding-and-security-privacy-notice" _rte_href="https://uk.westfield.com/safeguarding-and-security-privacy-notice">here</a></u>&nbsp;to view our centre safeguarding and security privacy notice for further information on how we use your personal data for these purposes, your rights, and how long we retain the information.&nbsp; This notices also includes information on exclusion orders.&nbsp;We also use licence plate recognition systems in our car parks for operational purposes (such as monitoring car park usage) and to provide services that help you to find your car.</p>
+				   <p><strong>Westfield Wi-Fi:&nbsp;</strong>If you use the Wi-Fi networks in our centres, we will collect Information from you in order to log you on to the network, including your name and email address. We may also collect Information relating to the duration of visits and the identity of the device that connects to the Wi-Fi.&nbsp; The lawful basis for the processing of the Information is that it is necessary for entering into a contract for the provision of a service you have requested.&nbsp; Any research/analysis conducted on Wi-Fi usage would be for the legitimate interests of Westfield.</p>
+				   <p><strong>Location and Wi Fi analytics</strong>: We may, with your consent, use Wi-Fi and other technology to help us analyse how visitors travel through our centres, and to provide useful information such as the proportion of repeat visitors to our centres.&nbsp; This technology works by collecting a unique identifier, called a MAC Address, from your mobile device.&nbsp; This is collected by the Wi-Fi signal that your device transmits.&nbsp; The MAC address is 'hashed' (a process that obscures the original MAC address) shortly after collection.&nbsp; We do not combine this information with any other information that may identify you.</p>
+				   <h3>Other uses of your information&nbsp;</h3>
+				   <p>In addition to the purposes already described, Westfield uses Information collected to perform essential business operations, for example: to understand usage patterns (such as foot traffic) within our centres; to develop, provide, improve and personalise Westfield products and services; and, to provide customer service/support. &nbsp;We may undertake additional research, analysis, and surveys, both online and in our centres.&nbsp; The lawful basis for this use of Information is for the legitimate business interests of Westfield.</p>
+				   <h2><a name="2" id="2"></a>4.&nbsp;&nbsp;&nbsp;&nbsp; HOW DO WE SHARE YOUR INFORMATION?</h2>
+				   <p><strong>Service Providers.</strong>&nbsp;We may share your personal data with the following third parties for further processing:</p>
+				   <ul>
+					  <li>our corporate affiliates, including our joint venture partners, in order to deliver the Services and develop and test new services and features;</li>
+					  <li>in the provision of our Smart Parking and finding your car Services;</li>
+					  <li>to process payments made;</li>
+					  <li>in the management of email marketing;</li>
+					  <li>to provide Wi-Fi in our centres;</li>
+					  <li>to provide CCTV and security services within our centres; and/or</li>
+					  <li>with contractors, consultants and professional advisors.</li>
+				   </ul>
+				   <p>A list of third parties who we transfer your personal data for this sort of processing is here:</p>
+				   <p><strong>BrainTree</strong><br> 247 Tottenham Court Road<br> Floor 1<br> London, UK W1T 7QX</p>
+				   <p><strong>parkIQ</strong><br> 3/122 Walker St<br> North Sydney NSW 2060, Australia</p>
+				   <p><strong>Salesforce.com EMEA Limited</strong><br> Floor 26 Salesforce Tower<br> 110 Bishopsgate<br> London UK EC2N 4AY</p>
+				   <p><strong>Spreedly</strong><br> 116 West Main Street<br> Durham, NC 27701-3232<br> United States</p>
+				   <p><strong>Onetrust</strong><br> London (Co-Headquarters)&nbsp;<br> Cannon Green, 27 Bush Lane&nbsp;<br> London EC4R 0AA</p>
+				   <p><strong>CMX Engage</strong> (Cisco Systems)<br> 9-11 New Square&nbsp;<br> Bedfont Lakes&nbsp;<br> Feltham&nbsp;<br> Middlesex&nbsp;<br> TW14 8HA</p>
+				   <p><strong><em>Managed by Westfield, LLC</em></strong><br> <strong><br> Hosting - Google - Big Query / Data Flow / GA</strong><br> Gordon House, Barrow Street<br> Dublin, D04 E5W5, Dublin</p>
+				   <p><strong>Hosting - Amazon - AWS</strong><br> Burlington Plaza, Burlington Rd<br> Dublin 4, Ireland</p>
+				   <p><strong>Hosting - Monitoring/Logging New Relic, Sumologic</strong><br> Aviation House<br> 125 Kingsway<br> London, WC2B 6NH</p>
+				   <p><strong>New Relic</strong><br> Strand Bridge House, 138-142 The Strand&nbsp;<br> London, England WC2R 1HL</p>
+				   <p><strong>Disclosure for Legal Reasons.</strong>&nbsp;We may disclose Information when we believe, in good faith, that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or comply with the law, including valid legal requests from the Police, or other government agencies.</p>
+				   <p><strong>Change of Ownership.</strong>&nbsp;If Westfield is involved in a merger, acquisition, dissolution, or sale of all or a portion of its assets, we reserve the right to transfer your Information. You will be notified via email or by notification on our website of any change in ownership.</p>
+				   <h2><a name="3" id="3"></a>5.&nbsp;&nbsp;&nbsp;&nbsp; USE OF CHILDREN'S INFORMATION</h2>
+				   <p>Westfield does not knowingly collect Information from children under the age of 16, but it may be collected from parents/guardians with their consent.&nbsp; Examples include the Kids Club services within our centres, and competitions that involve children's participation.</p>
+				   <p>If you have reason to believe that a child under the age of 16 has provided personal information to Westfield, please&nbsp;<u><a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">contact us</a></u>&nbsp;and we will delete that Information from our databases.</p>
+				   <h2><a name="4" id="4"></a>6.&nbsp;&nbsp;&nbsp;&nbsp; HOW LONG DO WE KEEP YOUR INFORMATION?</h2>
+				   <p>Westfield retains the Information we collect only for as long as necessary to provide the products and services you have requested, or for other essential purposes such as complying with legal obligations, resolving disputes, and enforcing our agreements.&nbsp; We retain certain categories of data for the following periods:</p>
+				   <ul>
+					  <li>E-newsletter information: for so long as you actively engage with our e-newsletter, after which we only retain the information for 1 year.&nbsp; If you request to unsubscribe or withdraw your consent to be contacted, you may receive communications whilst our systems update. We will delete your information within three months unless we hold it for other purposes, for example if you are registered for other services.</li>
+					  <li>Smart Parking information and purchases: 7 years</li>
+					  <li>General CCTV footage: 30 days</li>
+					  <li>CCTV footage of personal injury: 4 years for adults; 4 years after 16th&nbsp;birthday for minors</li>
+					  <li>CCTV footage of property damage: 7 years</li>
+					  <li>Personal injury records (other than CCTV): 10 years for adults; 21 years for minors</li>
+					  <li>Property damage records (other than CCTV): 6 years</li>
+				   </ul>
+				   <p>We provide further information in specific privacy notices on:</p>
+				   <ul>
+					  <li>specific retention periods for recruitment, employees and workers (available to a candidate when they apply for a role); and</li>
+					  <li>our uses of personal data for safeguarding and security purposes, available&nbsp;<a href="https://uk.westfield.com/safeguarding-and-security-privacy-notice" _rte_href="https://uk.westfield.com/safeguarding-and-security-privacy-notice">here</a>.</li>
+				   </ul>
+				   <h2><a name="5" id="5"></a>7.&nbsp;&nbsp;&nbsp;&nbsp; HOW DO WE KEEP YOUR INFORMATION SECURE?</h2>
+				   <p>The security of your Information is important to us. While we follow generally accepted security standards to safeguard the Information submitted to us, it is not possible to guarantee the security or integrity of Information on the internet. Therefore, we encourage you to take precautions to protect your Information, including protecting your passwords, using secure networks to access the internet, and logging out of online services when you are away from your device.</p>
+				   <h2><a name="6" id="6"></a>8.&nbsp;&nbsp;&nbsp;&nbsp; WHEN DO WE TRANSFER YOUR INFORMATION OVERSEAS?</h2>
+				   <p>We may transfer Information overseas in the following situations:</p>
+				   <ul>
+					  <li><strong>To other members of the URW Group where we share computing systems:&nbsp;</strong>These transfers are made lawful through an agreement between our group companies and model contractual clauses approved by the European Commission.</li>
+					  <li><strong>Where we use suppliers who are either based outside of the United Kingdom or who may store personal data on servers outside of the United Kingdom:&nbsp;&nbsp;</strong>Where these transfers are outside of the European Economic Area or where a country is not deemed to have an equivalent level of data protection law to the United Kingdom we use model contractual clauses approved by the European Commission or, for transfers to the US, ensure the transfer falls within the EU-US Privacy Shield Framework.</li>
+				   </ul>
+				   <h2><a name="7" id="7"></a>9.&nbsp;&nbsp;&nbsp;&nbsp; YOUR RIGHTS IN RELATION TO YOUR INFORMATION</h2>
+				   <p>Westfield adheres to all applicable data protection laws. In particular:</p>
+				   <ul>
+					  <li>You have the right to request a copy of the Information we hold on you, plus information on how we use your Information;</li>
+					  <li>You have the right object to the use of your Information; however, this right is limited and will depend upon the lawful basis by which we are using your Information;</li>
+					  <li>If Westfield's processing of Information is based on your consent, you have the right to withdraw consent for future processing at any time;</li>
+					  <li>You may request the deletion of your Information, unless we are legally entitled or obliged to retain the Information (for example, where we have a legal obligation to do so);</li>
+					  <li>You may have the right to object to the processing of your Information; and,</li>
+					  <li>You have the right to lodge a complaint with your Data Protection Authority. In the U.K, this is the<u><a href="https://ico.org.uk/" _rte_href="https://ico.org.uk/">&nbsp;Information Commissioner's Office</a>&nbsp;(ICO)</u>. You may contact the ICO by phone (+44 (0)3031231113), email (<a href="mailto:casework@ico.org.uk" _rte_href="mailto:casework@ico.org.uk">casework@ico.org.uk</a>) or by post (Customer Contact, Information Commissioner's Office, Wycliffe House, Water Lane, Wilmslow, SK9 5AF).</li>
+				   </ul>
+				   <h3><a name="8" id="8"></a>LINKS TO OTHER WEBSITES</h3>
+				   <p>Westfield's products and services may contain links or references to other websites or companies not operated or controlled by Westfield. The policies and procedures described here do not apply to those third parties. Links or advertisements do not imply that Westfield endorses or has reviewed such third parties or their privacy practices. Visit those third parties' websites or contact them directly for information on their privacy notices.</p>
+				   <h3><a name="9&quot;" id="9"></a>CHANGES TO THIS PRIVACY POLICY</h3>
+				   <p>We may update this Notice to reflect changes to our information practices and where updates are required by law. If we make any material changes we will notify you by email (sent to the email address specified in your account) or by means of a notice on our website prior to the change becoming effective. We encourage you to periodically review this page for the latest information on our privacy practices. Your continued use of Westfield products or services after any changes or revisions to this Notice shall indicate your agreement with the revised terms.</p>
+				   <h2><a name="10" id="10"></a>HOW TO CONTACT US</h2>
+				   <p>If you have questions or complaints regarding our privacy practices or this Notice, or would like to exercise your privacy rights please contact our Data Privacy Team:</p>
+				   <p>Via&nbsp;<u><a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">email</a></u>&nbsp;(<a href="mailto:dpo@urw.com" _rte_href="mailto:dpo@urw.com">dpo@urw.com</a>) or by post to: Data Privacy Team, Unibail-Rodamco-Westfield, 4th Floor, 1 Ariel Way, London, W12 7SL.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+</html>

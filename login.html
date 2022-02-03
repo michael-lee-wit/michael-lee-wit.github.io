@@ -7,12 +7,11 @@
 	<title>Captive Portal</title>
 	<style>
 		body {
-			background: #555;
+			background: #FFFFFF;
 			font-family: -apple-system,Arial,sans-serif;
 			font-size: 12px;
 			font-weight: 400;
 			color: #666;
-			background: white;
 			-webkit-font-smoothing: antialiased;
 			-webkit-text-size-adjust: 100%;
 		}
@@ -57,10 +56,9 @@
 		}
 		
 		.contentBlockText {
-			width: 100%;
-			max-width: 600;
-			height: 100%;
 			background: white;
+			width: calc(100% - 40px);
+			height: calc(100% - 40px);
 			border: 1px solid #e3e3e3;
 			padding: 10px 20px 10px 20px;
 			margin: 0;
@@ -74,7 +72,7 @@
 		
 		.contentBlockTextScrollingSection {
 			box-sizing: border-box;
-			height: calc(100% - 80px);
+			height: calc(100% - 52px);
 			padding: 10 20 10 10;
 			color: black;
 			overflow-y: scroll;
@@ -117,6 +115,17 @@
 			margin: 0px auto;
 		}
 		
+		.leftLine {
+			text-align: left;
+			padding: 10px 5px;
+		}
+
+		.leftLineBottomBorder {
+			text-align: left;
+			padding: 10px 5px;
+			border-bottom: 1px solid #B2B2B2;
+		}
+
 		.titleLine {
 			height: 77px;
 			text-align: center;
@@ -219,6 +228,7 @@
 			var termsWindow = document.getElementById("termsBlock")
 			var privacyWindow = document.getElementById("privacyBlock");
 			
+			showContentTextBackground();
 			loginWindow.style.visibility = 'hidden';
 			privacyWindow.style.visibility = 'hidden';
 			termsWindow.style.visibility = 'visible';
@@ -229,6 +239,7 @@
 			var termsWindow = document.getElementById("termsBlock")
 			var privacyWindow = document.getElementById("privacyBlock");
 			
+			showContentTextBackground();
 			loginWindow.style.visibility = 'hidden';
 			termsWindow.style.visibility = 'hidden';
 			privacyWindow.style.visibility = 'visible';
@@ -239,11 +250,20 @@
 			var termsWindow = document.getElementById("termsBlock")
 			var privacyWindow = document.getElementById("privacyBlock");
 			
+			showLoginBackground();
 			privacyWindow.style.visibility = 'hidden';
 			termsWindow.style.visibility = 'hidden';
 			loginWindow.style.visibility = 'visible';
 		}
 		
+		function showLoginBackground() {
+			document.body.style.background = "#FFFFFF";
+		}
+
+		function showContentTextBackground() {
+			document.body.style.background = "#B2B2B2";
+		}
+
 		function loadAction(){
 			  var url = window.location.href;
 			  var args = new Object();
@@ -261,7 +281,7 @@
 </script>
 </head>
 
-<body onload="loadAction();"> 
+<body onload="loadAction(); showTerms()"> 
 <form method="post" id="interstitial">
 	<input TYPE="hidden" NAME="buttonClicked" SIZE="16" MAXLENGTH="15" value="0">
 	<input TYPE="hidden" NAME="redirect_url" SIZE="255" MAXLENGTH="255" VALUE="">
@@ -286,15 +306,15 @@
 		</div>
 		
 		<div id="termsBlock" class="contentBlockText">
-			<div class="leftLine">
+			<div class="leftLineBottomBorder">
 				<span style="font-size: 18px">Terms and Conditions</span>
 				<a href="javascript:showLogin()"><img src="close.png" style="float: right; width: 15px; height: 15px" alt="Close"></a>
 			</div>
 			<div class="leftLine">
 				<div class="contentBlockTextScrollingSection">
 				   <div>
-					  <section class="     " style="height:auto;">
-						 <div class="">
+					  <section style="height:auto;">
+						 <div>
 							<h2>Westfield Terms and Conditions</h2>
 							<div>
 							   <p>These terms and conditions ("Terms and Conditions") govern your use and purchase of products or services &nbsp;from uk.westfield.com and our mobile app (the "Site") provided by Westfield Corporation, its subsidiaries, affiliates and related entities ("Westfield", "we", "us", and "our") and offered for Users in the United Kingdom. &nbsp;Additional or separate terms may apply to your use of other Westfield websites, services, or apps, or participation in any promotion. &nbsp;To the extent that the provisions of any additional terms conflict with these Terms and Conditions, the provisions of the additional terms will govern. By downloading, installing or using the Site, or accessing our website, you ("User", "you" or "your") agree to the Terms and Conditions below. &nbsp;</p>
@@ -369,8 +389,8 @@
 					  <hr>
 				   </div>
 				   <div>
-					  <section class="     " style="height:auto;">
-						 <div class="">
+					  <section style="height:auto;">
+						 <div>
 							<h2>Additional Terms and Conditions of Entry to Westfield Europe Shopping Centres</h2>
 							<div>
 							   <li><span><a name="clickhere" id="clickhere"></a>24 hour uniformed and plain clothed security operate at Westfield London and Westfield Stratford City</span></li>
@@ -388,8 +408,8 @@
 					  <hr>
 				   </div>
 				   <div>
-					  <section class="     " style="height:auto;">
-						 <div class="">
+					  <section style="height:auto;">
+						 <div>
 							<h2>Additional Terms and Conditions of Use Westfield Product Browse Services</h2>
 							<div>
 							   <p><a name="productbrowse" id="productbrowse"></a>In addition to the Terms and Conditions found at <a>https://uk.westfield.com/terms-and-conditions</a>, the following terms and conditions of use ("Product Browse Terms") apply to your use of the Product Browsing services ("Search Services") on the Site. By accessing and using the Site and Search Services, you agree to the Terms and Conditions and Product Browse Terms below. To the extent there exists a conflict between the Terms and Conditions and Product Browse Terms; these Product Browse Terms will take precedence. Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
@@ -416,8 +436,8 @@
 					  <hr>
 				   </div>
 				   <div>
-					  <section class="     " style="height:auto;">
-						 <div class="">
+					  <section style="height:auto;">
+						 <div>
 							<h2>Additional Terms and Conditions of Use Interactive Maps Services</h2>
 							<div>
 							   <p>In addition to the Terms and Conditions of Use found at <a>https://uk.westfield.com/terms-and-conditions</a>, the following terms and conditions of use ("Interactive Maps Terms") apply to your use of the Interactive Maps Services (defined below) on the Site.&nbsp; By accessing and using the Site and Interactive Maps Services, you agree to the Terms and Conditions and Interactive Maps Terms below.&nbsp; To the extent there exists a conflict between the Terms and Condititons and Interactive Maps Terms; the Interactive Maps Terms will take precedence.&nbsp; Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
@@ -443,8 +463,8 @@
 					  <hr>
 				   </div>
 				   <div>
-					  <section class="     " style="height:auto;">
-						 <div class="">
+					  <section style="height:auto;">
+						 <div>
 							<h2>Additional Terms and Conditions for Westfield Smart Parking Services</h2>
 							<div>
 							   <p>In addition to the Terms and Conditions found at&nbsp;<a>https://uk.westfield.com/terms-and-conditions</a>, the following Terms and Conditions ("Smart Parking Terms") apply to your use of the smart parking services ("Smart Parking Services") on the Site.&nbsp; By accessing and using the Site and Smart Parking Services, you agree to the Terms and Conditions and Smart Parking Terms below.&nbsp; To the extent there exists a conflict between the Terms and Conditions and Smart Parking Terms; the Smart Parking Terms will take precedence.&nbsp; Any capitalised terms not defined herein have the meanings set forth in the Terms and Conditions.</p>
@@ -480,8 +500,8 @@
 								  <hr>
 							   </div>
 							   <div>
-								  <section class="     " style="height:auto;">
-									 <div class="">
+								  <section style="height:auto;">
+									 <div>
 										<h2>Westfield Club Loyalty Programme Cashback Terms and Conditions (Effective 16 November 2021)</h2>
 										<div>
 										   <p>1. These terms and conditions (as revised or varied from time to time with notice) shall apply to your membership of the Westfield Club Loyalty Programme ("<strong>Westfield Club</strong>") and the allocation of Westfield Points on qualifying purchases made by you at the Centre.</p>
@@ -574,7 +594,7 @@
 		</div>
 		
 		<div id="privacyBlock" class="contentBlockText">
-			<div class="leftLine">
+			<div class="leftLineBottomBorder">
 				<span style="font-size: 18px">Privacy Policy</span>
 				<a href="javascript:showLogin()"><img src="close.png" style="float: right; width: 15px; height: 15px" alt="Close"></a>
 			</div>
